@@ -1,7 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
+﻿
 using RestSharp;
 
-namespace PetStore.Utils;
+
+namespace Reqres.Utils;
 
 public class APIUtils
 {
@@ -17,83 +18,55 @@ public class APIUtils
     }
 
 
-    public RestResponse AddPet()
+
+
+    public RestResponse DeleteUserData(string endpoint)
     {
-        string filePath = DataUtils.GetTestDataFilePath();
-
-        JObject jsonData = DataUtils.ReadJsonFromFile(filePath);
-
-        var pet = jsonData["petTestData1"].ToObject<PetModel>();
-
-        var request = new RestRequest("/pet", Method.Post);
-        request.AddHeader("Content-Type", "application/json");
-        request.AddJsonBody(pet);
-
-        var response = restClient.Execute(request);
-        return response;
-    }
-
-    public RestResponse DeletePet(int petId)
-    {
-        string filePath = DataUtils.GetTestDataFilePath();
-
-        JObject jsonData = DataUtils.ReadJsonFromFile(filePath);
-
-        var petIdToDelete = jsonData["petTestData1"]["id"].Value<int>();
-
-
-        if (petIdToDelete != petId)
-        {
-            Console.WriteLine($"Указанный petId ({petId}) не совпадает с petId в данных JSON ({petIdToDelete}).");
-            return null;
-        }
-
-        var request = new RestRequest($"/pet/{petIdToDelete}", Method.Delete);
-        var response = restClient.Execute(request);
-        return response;
-    }
-
-    public RestResponse EditPet()
-    {
-        string filePath = DataUtils.GetTestDataFilePath();
-
-        JObject jsonData = DataUtils.ReadJsonFromFile(filePath);
-
-        var pet = jsonData["petTestData2"].ToObject<PetModel>();
-        var request = new RestRequest($"/pet/", Method.Put);
-        request.AddHeader("Content-Type", "application/json");
-        request.AddJsonBody(pet);
-        var response = restClient.Execute(request);
-        return response;
-    }
-
-    public RestResponse GetPetById(int petId)
-    {
-        var request = new RestRequest($"/pet/{petId}", Method.Get);
+        var request = new RestRequest(endpoint, Method.Delete);
         request.AddHeader("Content-Type", "application/json");
         var response = restClient.Execute(request);
         return response;
-
     }
 
-    public RestResponse GetPetByStatus(string Status)
+    public RestResponse EditUserData(string endpoint, string requestBody)
     {
-        var request = new RestRequest($"/pet/{Status}", Method.Get);
+        var request = new RestRequest(endpoint, Method.Put);
+        request.AddHeader("Content-Type", "application/json");
+        request.AddParameter("application/json", requestBody, ParameterType.RequestBody);
+        var response = restClient.Execute(request);
+        return response;
+    }
+
+    public RestResponse UpdateUserData(string endpoint, string requestBody)
+    {
+        var request = new RestRequest(endpoint, Method.Patch);
+        request.AddHeader("Content-Type", "application/json");
+        request.AddParameter("application/json", requestBody, ParameterType.RequestBody);
+        var response = restClient.Execute(request);
+        return response;
+    }
+
+
+    public RestResponse GetUserData(string endpoint)
+    {
+         var request = new RestRequest(endpoint, Method.Get);
         request.AddHeader("Content-Type", "application/json");
         var response = restClient.Execute(request);
         return response;
-
     }
 
-    public RestResponse UploadPhoto(int petId, string filePath)
+    public RestResponse PostUserData(string endpoint, string requestBody)
     {
-        var request = new RestRequest($"/pet/{petId}/uploadImage", Method.Post);
-        request.AddHeader("Content-Type", "multipart/form-data");
-        request.AddFile("photo", filePath, "image/jpeg");
+        var request = new RestRequest(endpoint, Method.Post);
+        request.AddHeader("Content-Type", "application/json");
+        request.AddParameter("application/json", requestBody, ParameterType.RequestBody);
 
         var response = restClient.Execute(request);
         return response;
     }
+
+
+
 
 
 

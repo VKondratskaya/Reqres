@@ -7,9 +7,10 @@ public class DataUtils
         return JObject.Parse(jsonText);
     }
 
-    public static string GetTestDataFilePath()
+    public static string GetTestDataFilePath(string filename)
     {
         string currentDirectory = Directory.GetCurrentDirectory();
-        return Path.Combine(currentDirectory, "Resources", "testdata.json");
+        return Path.Combine(currentDirectory, "Resources", filename);
     }
+
 }
